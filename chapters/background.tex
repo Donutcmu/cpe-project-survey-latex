@@ -1,113 +1,95 @@
 \chapter{\ifenglish Background Knowledge and Theory\else ทฤษฎีที่เกี่ยวข้อง\fi}
 
-การทำโครงงาน เริ่มต้นด้วยการศึกษาค้นคว้า ทฤษฎีที่เกี่ยวข้อง หรือ งานวิจัย/โครงงาน ที่เคยมีผู้นำเสนอไว้แล้ว ซึ่งเนื้อหาในบทนี้ก็จะเกี่ยวกับการอธิบายถึงสิ่งที่เกี่ยวข้องกับโครงงาน เพื่อให้ผู้อ่านเข้าใจเนื้อหาในบทถัดๆ ไปได้ง่ายขึ้น
+การพัฒนาเกมคอมพิวเตอร์จำเป็นต้องอาศัยความรู้จากหลายด้าน เช่น การเขียนโปรแกรม การออกแบบระบบซอฟต์แวร์ การออกแบบกราฟิก และการออกแบบประสบการณ์ผู้ใช้ โดยบทนี้จะอธิบายทฤษฎีและแนวคิดพื้นฐานที่เกี่ยวข้องกับการพัฒนาเกมในโครงงาน เพื่อให้ผู้อ่านสามารถเข้าใจแนวทางการออกแบบและพัฒนาระบบของเกมได้ง่ายขึ้น
 
-\section{The first section}
-The text for Section 1 goes here.
+\section{Game Development}
 
-\section{Second section}
-Section 2 text.
+Game Development คือกระบวนการสร้างเกมคอมพิวเตอร์ตั้งแต่ขั้นตอนการออกแบบแนวคิดของเกม (Game Concept) การออกแบบระบบการเล่น (Gameplay Design) การพัฒนาโปรแกรม (Programming) ไปจนถึงการทดสอบและปรับปรุงเกม (Testing and Debugging)
 
-\subsection{Subsection heading goes here}
+โดยทั่วไปกระบวนการพัฒนาเกมจะประกอบด้วยขั้นตอนสำคัญ ได้แก่
 
-Subsection 1 text
+\begin{itemize}
+\item การออกแบบแนวคิดของเกม (Game Design)
+\item การออกแบบระบบการเล่น (Gameplay Mechanics)
+\item การพัฒนาโปรแกรม (Game Programming)
+\item การสร้างกราฟิกและแอนิเมชัน (Art and Animation)
+\item การทดสอบระบบ (Game Testing)
+\end{itemize}
 
-\subsubsection{Subsubsection 1 heading goes here}
-Subsubsection 1 text
+โครงงานนี้ใช้กระบวนการพัฒนาเกมในลักษณะของการสร้างต้นแบบ (Prototype) เพื่อทดสอบแนวคิดของระบบเกมก่อนการพัฒนาเต็มรูปแบบ
 
-\subsubsection{Subsubsection 2 heading goes here}
-Subsubsection 2 text
+\section{Unity Game Engine}
 
-\section{Third section}
-Section 3 text. The dielectric constant\index{dielectric constant}
-at the air-metal interface determines
-the resonance shift\index{resonance shift} as absorption or capture occurs
-is shown in Equation~\eqref{eq:dielectric}:
+Unity เป็น Game Engine ที่ได้รับความนิยมอย่างแพร่หลายในการพัฒนาเกมทั้งแบบ 2 มิติและ 3 มิติ โดยรองรับการพัฒนาเกมสำหรับหลายแพลตฟอร์ม เช่น Windows, macOS, Android และ iOS
 
-\begin{equation}\label{eq:dielectric}
-k_1=\frac{\omega}{c({1/\varepsilon_m + 1/\varepsilon_i})^{1/2}}=k_2=\frac{\omega
-\sin(\theta)\varepsilon_\mathit{air}^{1/2}}{c}
-\end{equation}
+Unity มีคุณสมบัติสำคัญที่ช่วยให้การพัฒนาเกมมีประสิทธิภาพ เช่น
 
-\noindent
-where $\omega$ is the frequency of the plasmon, $c$ is the speed of
-light, $\varepsilon_m$ is the dielectric constant of the metal,
-$\varepsilon_i$ is the dielectric constant of neighboring insulator,
-and $\varepsilon_\mathit{air}$ is the dielectric constant of air.
+\begin{itemize}
+\item ระบบ Physics สำหรับการจำลองการเคลื่อนไหวของวัตถุ
+\item ระบบ Animation สำหรับควบคุมการเคลื่อนไหวของตัวละคร
+\item ระบบ Scene Management สำหรับจัดการฉากในเกม
+\item ระบบ Script ที่ใช้ภาษา C\# ในการพัฒนา
+\end{itemize}
 
-\section{About using figures in your report}
+ในโครงงานนี้ Unity ถูกใช้เป็นเครื่องมือหลักในการพัฒนาเกม เนื่องจากมีเครื่องมือที่ช่วยให้สามารถพัฒนาเกมต้นแบบได้อย่างรวดเร็ว
 
-% define a command that produces some filler text, the lorem ipsum.
-\newcommand{\loremipsum}{
-  \textit{Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-  eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-  minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-  aliquip ex ea commodo consequat. Duis aute irure dolor in
-  reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-  pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-  culpa qui officia deserunt mollit anim id est laborum.}\par}
+\subsection{C\# Programming Language}
 
-\begin{figure}
-  \centering
+C\# เป็นภาษาโปรแกรมเชิงวัตถุ (Object-Oriented Programming Language) ที่ถูกใช้ใน Unity สำหรับเขียนสคริปต์ควบคุมการทำงานของเกม เช่น การควบคุมตัวละคร การจัดการศัตรู และระบบต่าง ๆ ของเกม
 
-  \fbox{
-     \parbox{.6\textwidth}{\loremipsum}
-  }
+คุณสมบัติสำคัญของภาษา C\# ได้แก่
 
-  % To include an image in the figure, say myimage.pdf, you could use
-  % the following code. Look up the documentation for the package
-  % graphicx for more information.
-  % \includegraphics[width=\textwidth]{myimage}
+\begin{itemize}
+\item รองรับการเขียนโปรแกรมเชิงวัตถุ
+\item มีโครงสร้างที่ชัดเจนและอ่านง่าย
+\item รองรับการพัฒนาโปรแกรมขนาดใหญ่
+\end{itemize}
 
-  \caption[Sample figure]{This figure is a sample containing \gls{lorem ipsum},
-  showing you how you can include figures and glossary in your report.
-  You can specify a shorter caption that will appear in the List of Figures.}
-  \label{fig:sample-figure}
-\end{figure}
+\subsubsection{Game Script}
 
-Using \verb.\label. and \verb.\ref. commands allows us to refer to
-figures easily. If we can refer to Figures
-\ref{fig:walrus} and \ref{fig:sample-figure} by name in the {\LaTeX}
-source code, then we will not need to update the code that refers to it
-even if the placement or ordering of the figures changes.
+Game Script คือโปรแกรมที่ใช้ควบคุมพฤติกรรมของวัตถุภายในเกม เช่น การเคลื่อนไหวของตัวละคร การโจมตีของศัตรู หรือการทำงานของระบบเกมต่าง ๆ
 
-\loremipsum\loremipsum
+ใน Unity สคริปต์มักจะถูกผูกเข้ากับ Game Object ภายใน Scene เพื่อกำหนดพฤติกรรมของวัตถุนั้น ๆ
 
-% This code demonstrates how to get a landscape table or figure. It
-% uses the package lscape to turn everything but the page number into
-% landscape orientation. Everything should be included within an
-% \afterpage{ .... } to avoid causing a page break too early.
-\afterpage{
-  \begin{landscape}
-  \begin{table}
-    \caption{Sample landscape table}
-    \label{tab:sample-table}
+\subsubsection{Component System}
 
-    \centering
+Unity ใช้โครงสร้างแบบ Component-Based Architecture โดยวัตถุในเกมจะเรียกว่า Game Object และสามารถเพิ่ม Component ต่าง ๆ เข้าไปเพื่อกำหนดคุณสมบัติ เช่น
 
-    \begin{tabular}{c||c|c}
-        Year & A & B \\
-        \hline\hline
-        1989 & 12 & 23 \\
-        1990 & 4 & 9 \\
-        1991 & 3 & 6 \\
-    \end{tabular}
-  \end{table}
-  \end{landscape}
-}
+\begin{itemize}
+\item Transform Component
+\item Rigidbody
+\item Collider
+\item Animator
+\end{itemize}
 
-\loremipsum\loremipsum\loremipsum
+โครงสร้างดังกล่าวช่วยให้สามารถพัฒนาระบบเกมได้อย่างยืดหยุ่นและง่ายต่อการขยายระบบในอนาคต
 
-\section{Overfull hbox}
+\section{2D Game System}
 
-When the \verb.semifinal. option is passed to the \verb.cpecmu. document class,
-any line that is longer than the line width, i.e., an overfull hbox, will be
-highlighted with a black solid rule:
-\begin{center}
-\begin{minipage}{2em}
-juxtaposition
-\end{minipage}
-\end{center}
+เกมในโครงงานนี้เป็นเกมแบบสองมิติ (2D Game) ซึ่งใช้ระบบ Sprite และ Tilemap สำหรับการสร้างฉากและตัวละครภายในเกม
+
+ระบบหลักที่ใช้ในการพัฒนาเกม 2 มิติ ได้แก่
+
+\begin{itemize}
+\item Sprite Rendering สำหรับการแสดงผลภาพตัวละคร
+\item Animation System สำหรับการเคลื่อนไหวของตัวละคร
+\item Physics System สำหรับการตรวจจับการชน
+\item Input System สำหรับรับคำสั่งจากผู้เล่น
+\end{itemize}
+
+\section{Gameplay Mechanics}
+
+Gameplay Mechanics คือกฎและระบบที่กำหนดรูปแบบการเล่นของเกม ซึ่งมีผลต่อประสบการณ์ของผู้เล่นโดยตรง
+
+ในโครงงานนี้ ระบบ Gameplay หลักประกอบด้วย
+
+\begin{itemize}
+\item ระบบการสำรวจแผนที่ (Exploration)
+\item ระบบการต่อสู้ (Combat System)
+\item ระบบไอเทมและอุปกรณ์ (Item System)
+\item ระบบมินิเกม (Mini-game System)
+\item ระบบบอส (Boss System)
+\end{itemize}
 
 \section{\ifenglish%
 \ifcpe CPE \else ISNE \fi knowledge used, applied, or integrated in this project
@@ -116,7 +98,16 @@ juxtaposition
 \fi
 }
 
-อธิบายถึงความรู้ และแนวทางการนำความรู้ต่างๆ ที่ได้เรียนตามหลักสูตร ซึ่งถูกนำมาใช้ในโครงงาน
+ในการพัฒนาโครงงานนี้ มีการนำความรู้จากหลายวิชาที่ได้ศึกษาในหลักสูตรมาใช้ เช่น
+
+\begin{itemize}
+\item วิชาการเขียนโปรแกรมคอมพิวเตอร์
+\item วิชาโครงสร้างข้อมูลและอัลกอริทึม
+\item วิชาวิศวกรรมซอฟต์แวร์
+\item วิชาการออกแบบระบบคอมพิวเตอร์
+\end{itemize}
+
+ความรู้จากวิชาเหล่านี้ถูกนำมาใช้ในการออกแบบโครงสร้างโปรแกรม การจัดการข้อมูล และการพัฒนาระบบต่าง ๆ ภายในเกม
 
 \section{\ifenglish%
 Extracurricular knowledge used, applied, or integrated in this project
@@ -125,4 +116,6 @@ Extracurricular knowledge used, applied, or integrated in this project
 \fi
 }
 
-อธิบายถึงความรู้ต่างๆ ที่เรียนรู้ด้วยตนเอง และแนวทางการนำความรู้เหล่านั้นมาใช้ในโครงงาน
+นอกจากความรู้ตามหลักสูตรแล้ว โครงงานนี้ยังมีการศึกษาและเรียนรู้เพิ่มเติมจากแหล่งข้อมูลภายนอก เช่น เอกสารออนไลน์ บทความเกี่ยวกับการพัฒนาเกม และบทเรียนจากชุมชนนักพัฒนาเกม
+
+ความรู้ที่ได้จากการศึกษาด้วยตนเอง เช่น การใช้งาน Unity Game Engine การออกแบบระบบเกม และเทคนิคการพัฒนาเกม ถูกนำมาประยุกต์ใช้ในการพัฒนาโครงงานนี้เพื่อให้สามารถสร้างเกมต้นแบบที่มีระบบการเล่นสมบูรณ์มากยิ่งขึ้น
