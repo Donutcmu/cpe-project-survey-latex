@@ -2,21 +2,22 @@
 \makesignature
 
 \ifproject
-\begin{abstractTH}
-โครงงานนี้เป็นการพัฒนาเกมต้นแบบชื่อ Marionette ซึ่งเป็นเกมแนว 2 มิติประเภท Action RPG ที่ผสมผสานรูปแบบการเล่นแบบ Casual และ Mini-game โดยมีธีมหลักเกี่ยวกับโรงละครหุ่นเชิดที่มีบรรยากาศสดใสแต่แฝงไปด้วยโทนหม่นหมอง ผู้เล่นจะรับบทเป็นมนุษย์ที่ถูกแม่มดจับตัวมาแปลงเป็นหุ่นเชิดเพื่อใช้แสดงในโรงละคร และต้องพยายามหาทางหลบหนีเพื่อกลับคืนสู่อิสรภาพ
+\begin{abstract}
 
-ระบบการเล่นของเกมประกอบด้วยหลายส่วนสำคัญ ได้แก่ การสำรวจแผนที่เพื่อเก็บไอเทมและพัฒนาตัวละคร การแสดงบนเวทีในรูปแบบมินิเกมที่มีธีมแตกต่างกันในแต่ละด่าน และการต่อสู้กับบอสเพื่อปลดล็อกความสามารถและดำเนินเนื้อเรื่องของเกม นอกจากนี้ยังมีระบบต่าง ๆ เช่น ระบบค่าสถานะตัวละคร ระบบอุปกรณ์และอาวุธ ระบบคราฟไอเทม รวมถึงระบบบันทึกเกมและระดับความยากที่แตกต่างกัน เพื่อเพิ่มความหลากหลายของประสบการณ์การเล่น
+โครงงานนี้นำเสนอการพัฒนาเกมต้นแบบแนวสองมิติประเภท Action RPG ผสมผสานกับรูปแบบการเล่นแบบ Casual ภายใต้ชื่อเกม Marionette ซึ่งมีเนื้อเรื่องเกี่ยวกับตัวละครเอกที่ถูกแม่มดจับตัวและสาปให้กลายเป็นหุ่นเชิดในโรงละครลึกลับ ผู้เล่นจะต้องพยายามหาทางหลบหนีจากการควบคุมของแม่มด พร้อมทั้งเผชิญหน้ากับศัตรูและอุปสรรคต่าง ๆ ภายในเกม รูปแบบการเล่นเน้นการวางแผนเชิงกลยุทธ์และการบริหารทรัพยากรที่มีอยู่อย่างจำกัดภายใต้สถานการณ์ที่มีข้อจำกัดด้านเวลา เพื่อให้สามารถรับมือกับศัตรูและผ่านด่านต่าง ๆ ได้สำเร็จ
 
-วัตถุประสงค์ของโครงงานนี้คือการพัฒนาเกมต้นแบบที่สามารถเล่นได้จริง โดยเน้นการออกแบบและพัฒนาระบบหลักของเกม เช่น ระบบการต่อสู้ ระบบอินเวนทอรี ระบบศัตรู และระบบบอส พร้อมทั้งออกแบบฉาก ตัวละคร แอนิเมชัน และส่วนติดต่อผู้ใช้ เพื่อให้ผู้เล่นสามารถทดลองรูปแบบการเล่นของเกมได้อย่างสมบูรณ์ในระดับด่านแรก ผลลัพธ์ของโครงงานแสดงให้เห็นแนวทางการออกแบบเกมที่ผสมผสานระหว่างการผจญภัย การต่อสู้ และมินิเกมในธีมโรงละคร ซึ่งสามารถนำไปพัฒนาและต่อยอดเป็นเกมฉบับสมบูรณ์ได้ในอนาคต
+จากรายงาน ดัชนีอุตสาหกรรมดิจิทัลประเทศไทย ปี 2567 ของสำนักงานส่งเสริมเศรษฐกิจดิจิทัล depa Thailand พบว่าแม้อุตสาหกรรมเกมของประเทศไทยจะมีมูลค่าเพิ่มขึ้นอย่างต่อเนื่อง แต่การพัฒนาเกมภายใต้ทรัพย์สินทางปัญญาของผู้พัฒนาในประเทศกลับมีแนวโน้มลดลง โดยส่วนหนึ่งมาจากการรับจ้างพัฒนาและจัดจำหน่ายเกมภายใต้ลิขสิทธิ์ของต่างประเทศ โครงงานนี้จึงมีเป้าหมายเพื่อส่งเสริมการพัฒนาเกมที่เป็นทรัพย์สินทางปัญญาของนักพัฒนาไทย และสร้างแรงบันดาลใจให้เกิดการพัฒนาเกมต้นฉบับภายในประเทศมากยิ่งขึ้น
 
-\end{abstractTH}
+การพัฒนาเกมต้นแบบนี้ใช้ Unity Game Engine เป็นเครื่องมือหลัก และใช้ภาษา C\# สำหรับการพัฒนาระบบต่าง ๆ ของเกม โดยมีการใช้ Animation State Machine เพื่อควบคุมการทำงานของแอนิเมชันตัวละคร และ Finite State Machine สำหรับกำหนดพฤติกรรมของตัวละครที่ไม่ใช่ผู้เล่น นอกจากนี้ยังมีการออกแบบส่วนติดต่อผู้ใช้ เอฟเฟกต์ภาพ เสียงประกอบ และดนตรีพื้นหลัง เพื่อเพิ่มประสบการณ์การเล่นเกมให้สมบูรณ์มากยิ่งขึ้น
+
+\end{abstract}
 
 \begin{abstract}
-This project focuses on the development of a game prototype titled Marionette, which is a two-dimensional Action RPG that combines casual gameplay elements with mini-games. The main theme of the game revolves around a puppet theater with a bright yet slightly gloomy atmosphere. In the game, the player takes the role of a human who has been captured by a witch and transformed into a marionette puppet to perform in the theater. The player must attempt to escape from the witch’s control and regain their freedom.
+This project presents the development of a two-dimensional Action RPG combined with casual gameplay elements, titled Marionette. The game follows the story of a protagonist who is captured by a witch and cursed to become a marionette puppet in a mysterious theater. The player must attempt to escape from the witch’s control while facing various enemies and challenges throughout the game. The gameplay emphasizes strategic thinking and resource management within time-limited situations in order to overcome obstacles and survive encounters with enemies.
 
-The gameplay system consists of several key components. These include map exploration for collecting items and character progression, stage performances presented in the form of mini-games with different themes in each level, and boss battles that allow players to unlock new abilities and progress through the storyline. In addition, the game includes several supporting systems such as character status attributes, equipment and weapon systems, item crafting, a save system, and multiple difficulty levels. These systems are designed to enhance gameplay diversity and provide a more engaging player experience.
+According to the report Thailand Digital Industry Index 2024 published by the Digital Economy Promotion Agency depa Thailand, the value of the Thai game industry has continued to grow. However, the development of original intellectual property (IP) by Thai companies has declined, with many companies focusing on publishing or outsourcing under foreign intellectual property licenses. This project therefore aims to encourage the development of original game content and inspire Thai developers to create games under their own intellectual property.
 
-The objective of this project is to develop a playable game prototype by focusing on the design and implementation of the core gameplay systems. These systems include the combat system, inventory system, enemy system, and boss system. The project also involves designing game environments, characters, animations, and user interface components to ensure that players can experience the core gameplay mechanics within the first level of the game. The outcome of this project demonstrates an approach to game design that integrates exploration, combat mechanics, and mini-game elements within a theatrical theme. Furthermore, the prototype can serve as a foundation for further development into a complete game in the future.
+The game prototype was developed using the Unity Game Engine and the C\# programming language. Key development techniques include the use of Animation State Machines for character animations and Finite State Machines for non-player character behavior. Visual effects, sound effects, and background music are also integrated to enhance the gameplay experience. The resulting prototype demonstrates the feasibility of combining exploration, combat, and mini-game mechanics within a theatrical game theme.
 \end{abstract}
 
 \iffalse

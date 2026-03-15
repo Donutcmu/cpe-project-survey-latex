@@ -72,6 +72,13 @@
 % \includeonly{chapters/intro,chapters/background}
 
 \begin{document}
+% Reduce overfull hbox black markers by allowing stretch and hyphenation.
+\emergencystretch=1em
+\tolerance=1200
+\hyphenpenalty=500
+\exhyphenpenalty=500
+\sloppy
+
 \include{chapters/frontmatter}
 
 \pagestyle{empty}\cleardoublepage
@@ -80,13 +87,16 @@
 \include{chapters/intro}
 \include{chapters/background}
 \include{chapters/approach}
+\include{chapters/evaluation}
 %%\include{chapters/eval}
 \ifproject
 
 %%\include{chapters/conclusion}
 \fi
 
-\bibliography{sampleReport}
+% Include all entries from references.bib even if not cited in text
+\nocite{*}
+\bibliography{references}
 
 \ifproject
 \normalspacing
