@@ -23,84 +23,266 @@
 
 ระบบทั้งหมดถูกพัฒนาด้วย Unity Game Engine และใช้ภาษา C\# ในการควบคุมการทำงานของระบบต่าง ๆ ภายในเกม
 
-\section{Game Architecture}
+\section{Game Architecture \& Structure Design}
 
-โครงสร้างของระบบเกมถูกออกแบบในรูปแบบ Component-Based Architecture ซึ่งเป็นรูปแบบการออกแบบที่ Unity ใช้เป็นหลัก โดยวัตถุในเกมจะถูกเรียกว่า Game Object และสามารถเพิ่ม Component ต่าง ๆ เข้าไปเพื่อกำหนดคุณสมบัติและพฤติกรรมของวัตถุนั้น
+ในหัวข้อนี้จะสรุปภาพรวมในมุมมองของวิศวกรรมซอฟต์แวร์ (Software Engineering) โดยเจาะลึกไปที่หลักการเขียนโค้ด (Programming Principles), การออกแบบเชิงวัตถุ (OOP), โครงสร้างข้อมูล (Data Structures) และ Design Patterns ที่ถูกนำมาใช้ในระบบ Gameplay Loop และ Save/Load System
 
-องค์ประกอบสำคัญของ Game Object ได้แก่
+\subsection{Design Patterns ที่ใช้ในการวางโครงสร้าง}
 
-\begin{itemize}
-\item Transform Component สำหรับกำหนดตำแหน่งและการเคลื่อนที่
-\item Rigidbody สำหรับการคำนวณฟิสิกส์
-\item Collider สำหรับตรวจจับการชน
-\item Script Component สำหรับควบคุมพฤติกรรมของวัตถุ
-\end{itemize}
+\textbf{1. Singleton Pattern}
 
-โครงสร้างนี้ช่วยให้สามารถพัฒนาระบบเกมได้อย่างยืดหยุ่นและสามารถขยายระบบเพิ่มเติมได้ในอนาคต
-
-\section{Gameplay Flow}
-
-ลำดับการทำงานของเกมสามารถอธิบายได้ดังนี้
-
-\begin{enumerate}
-\item ผู้เล่นเริ่มเกมในห้องเก็บหุ่น (Storage Room)
-\item ผู้เล่นสามารถออกสำรวจพื้นที่ภายในโรงละครเพื่อเก็บไอเทมและต่อสู้กับศัตรู
-\item เมื่อถึงเวลากลางคืน ผู้เล่นจะสามารถเลือกได้ว่าจะสำรวจต่อหรือกลับไปแสดงเพื่อให้เวลาเปลี่ยนเป็นกลางวัน
-\item ตัวละครจะถูกส่งไปยังเวทีเพื่อเล่นมินิเกมการแสดง
-\item หากผ่านการแสดงครบตามเงื่อนไข ผู้เล่นสามารถเลือกได้ว่าจะสำรวจต่อหรือไปสู้กับบอสของด่านนั้น
-\item เมื่อปราบบอสสำเร็จ ผู้เล่นจะสามารถเข้าสู่ด่านถัดไป
-\end{enumerate}
-
-โครงสร้างดังกล่าวทำให้เกมมีลักษณะการเล่นแบบวนรอบ (Gameplay Loop) ระหว่างการสำรวจ การแสดง และการต่อสู้กับบอส
-
-\section{System Modules}
-
-ระบบของเกมถูกแบ่งออกเป็นโมดูลต่าง ๆ เพื่อให้สามารถพัฒนาและทดสอบระบบได้อย่างเป็นระบบ
-
-\subsection{Player System}
-
-Player System เป็นระบบที่ควบคุมการทำงานของตัวละครผู้เล่น เช่น
+ระบบหลักของเกมที่ต้องทำงานควบคู่กันไปตลอดและข้าม Scene (Persistent Systems) ถูกออกแบบโดยใช้รูปแบบ Singleton
 
 \begin{itemize}
-\item การเคลื่อนที่ของตัวละคร
-\item การกระโดด
-\item การโจมตี
-\item การหลบการโจมตี
+\item \textbf{คลาสเป้าหมาย:} \texttt{GameProgressManager} และ \texttt{ExpeditionManager}
+\item \textbf{การนำไปใช้งาน:} ระบุตัวแปร \texttt{public static Instance} ควบคู่กับการเรียกคำสั่ง \texttt{DontDestroyOnLoad(gameObject)} ในจังหวะ \texttt{Awake()}
+\item \textbf{ข้อดี:} รับประกันว่าจะมี Manager เหล่านี้เพียง 1 ตัวในระบบตลอดเวลา ช่วยให้คลาสอื่นๆ อ้างอิงได้ง่าย (เช่น \texttt{GameProgressManager.Instance.SaveGame()}) โดยไม่ต้องใช้ \texttt{FindObjectOfType} ที่เปลืองทรัพยากร
 \end{itemize}
 
-ระบบนี้ทำงานผ่าน Script ที่ควบคุม Input จากผู้เล่นและแปลงเป็นการกระทำของตัวละครภายในเกม
+\textbf{2. Observer Pattern (Event-Driven Architecture)}
 
-\subsection{Enemy System}
-
-Enemy System เป็นระบบที่ควบคุมพฤติกรรมของศัตรูภายในเกม เช่น
+การออกแบบให้ระบบต่างๆ ตอบสนองกริยาของระบบอื่น โดยไม่ต้องผูกมัดโค้ดกันตัวต่อตัว (Decoupling)
 
 \begin{itemize}
-\item การเดินลาดตระเวน
-\item การโจมตีผู้เล่น
-\item การตรวจจับผู้เล่น
-\item การตายของศัตรู
+\item \textbf{ตัวอย่าง 1:} \texttt{UnityEvent} ใน \texttt{ExpeditionManager} (เช่น \texttt{onDayStart}, \texttt{onNightBegin}) ทำให้ตัวจับเวลาไม่จำเป็นต้องรู้จักคลาส \texttt{DangerousMobSpawner} หรือ \texttt{DayNightLighting} โดยตรง แต่เป็นการเปิดช่องให้คลาสเหล่านั้น "มาดักจับ (Listen)" อีเวนต์เอาเองใน \texttt{Start}
+\item \textbf{ตัวอย่าง 2:} กดยกเลิกและลงทะเบียนฟังก์ชันเข้ากับ C\# Action / Delegate ของ Unity อย่าง \texttt{SceneManager.sceneLoaded += OnSceneLoaded} เพื่อรอฟังสัญญาณการโหลดจบทันที
 \end{itemize}
 
-ระบบนี้ถูกออกแบบโดยใช้แนวคิด Finite State Machine (FSM) เพื่อกำหนดสถานะต่าง ๆ ของศัตรู
+\subsection{Object-Oriented Programming (OOP) Principles}
 
-\subsection{Combat System}
+\textbf{1. Encapsulation (การแคปซูลข้อมูล)}
 
-Combat System เป็นระบบที่ควบคุมการต่อสู้ภายในเกม โดยผู้เล่นสามารถใช้อาวุธต่าง ๆ เพื่อโจมตีศัตรู
-
-ระบบนี้ประกอบด้วย
+การซ่อนข้อมูลที่อ่อนไหวและเปิดเผยเฉพาะฟังก์ชันที่จำเป็น เพื่อป้องกันการเข้าถึงจากภายนอกแบบผิดวิธี
 
 \begin{itemize}
-\item ระบบโจมตี
-\item ระบบป้องกัน
-\item ระบบคำนวณความเสียหาย
-\item ระบบสถานะของตัวละคร
+\item \textbf{ตัวอย่าง:} ใน \texttt{GameProgressManager} ออบเจกต์ \texttt{\_pendingLoadData} ถูกตั้งเป็น private ไม่ยอมให้สคริปต์ภายนอกเข้ามาเสกของยัดมือผู้เล่นได้โดยตรง แต่จะต้องถูกโปรเซสและลำเลียงเข้า Inventory ภายในระบบ (internal method)
+\item \textbf{การจัดกลุ่ม Helper Method:} การแยก Method เป็นสัดส่วน เช่น \texttt{GetInventoryData()}, \texttt{ReadSaveData()} ขอบเขตการเข้าถึงถูกแยกชัดเจน
 \end{itemize}
 
-\subsection{Item and Equipment System}
+\textbf{2. Abstraction \& Component-Based Architecture}
 
-ระบบไอเทมและอุปกรณ์ถูกออกแบบเพื่อให้ผู้เล่นสามารถเก็บและใช้งานไอเทมต่าง ๆ ภายในเกม เช่น อาวุธ ชุดเกราะ และไอเทมฟื้นฟูพลังชีวิต
+สืบทอดจาก MonoBehaviour ของ Unity โดยตัวระบบแยกหน้าที่ย่อยเป็น Component ให้มากที่สุด
 
-ไอเทมแต่ละชนิดจะมีคุณสมบัติที่แตกต่างกัน และสามารถเพิ่มค่าความสามารถให้กับตัวละครผู้เล่นได้
+\begin{itemize}
+\item \textbf{ตัวอย่าง:} แบ่งหน้าที่ของเวลาให้ \texttt{ExpeditionManager} ตัดสินใจ แต่เวลาโหลดของหรือผู้เล่นตายให้ \texttt{GameProgressManager} รับผิดชอบ ต่างคนต่างทำงานในหน้าที่ย่อยชัดเจน (Single Responsibility Principle - ส่วนหนึ่งของ SOLID)
+\end{itemize}
+
+\subsection{Data Structures (โครงสร้างข้อมูล)}
+
+รูปแบบการเลือกใช้ Data Structure ถูกพิจารณาจาก Big-O Notation และลักษณะการนำไปใช้งาน
+
+\textbf{1. HashSet$<$string$>$ (การเข้าถึงแบบ O(1))}
+
+\begin{itemize}
+\item \textbf{การใช้งาน:} นำมาเก็บ \texttt{defeatedBosses} (บอสที่ถูกฆ่า) และ \texttt{openedBoxes} (กล่องสมบัติที่โดนเปิดไปแล้ว)
+\item \textbf{เหตุผลทางการออกแบบ:} ในเกมเพลย์ ทุกๆ ครั้งที่โหลดฉากใหม่ หรือเดินผ่านกล่อง จะต้องมีการเช็คว่า "กล่องนี้เคยเปิดรึยัง?" (\texttt{.Contains()}) บ่อยมาก การใช้ \texttt{List<string>} จะทำให้ Big-O คือ $O(n)$ ซึ่งช้าลงเรื่อยๆ ตามจำนวนกล่องที่เปิด แต่การใช้ HashSet เป็นโครงสร้างแบบ Hash Table รับประกันความเร็วที่คงที่ระดับ $O(1)$ ป้องกันไอเทมซ้ำซ้อนโดยธรรมชาติ (Unique constraints)
+\end{itemize}
+
+\textbf{2. List$<$T$>$ (คอลเลกชันแบบ Dynamic Array)}
+
+\begin{itemize}
+\item \textbf{การใช้งาน:} \texttt{activeTraits}, \texttt{runsInScenes} และใช้รองรับการ Serialize ลง JSON
+\item \textbf{เหตุผลทางการออกแบบ:} เหมาะกับข้อมูลเรื่องของลำดับ ไอเทมในช่องเก็บของ (\texttt{InventoryData.itemNames} / \texttt{itemCounts}) ที่ลำดับใน Index สอดคล้องกับตำแหน่งหน้าต่าง UI
+\end{itemize}
+
+\textbf{3. Data Class Models (Serialization)}
+
+\begin{itemize}
+\item \textbf{การใช้งาน:} สร้างโครงสร้างคลาสจำลองเพื่อห่อหุ้มข้อมูลก่อนนำไปเซฟ (เช่น คลาส \texttt{SaveData}, \texttt{PlayerStatsData}, \texttt{InventoryData}) โดยกำกับด้วย Attribute \texttt{[Serializable]}
+\item \textbf{เหตุผลทางการออกแบบ:} ออบเจกต์ Unity (เช่น \texttt{PlayerStats} ที่สืบทอด MonoBehaviour) ไม่สามารถเซฟทับลงไฟล์ JSON โดยตรงได้ จึงต้องสร้าง Data Class ร่างจำลองมาถ่ายโอนค่า (Data Transfer Object) ก่อนแปลงเป็น String JSON ด้วย \texttt{JsonUtility}
+\end{itemize}
+
+\subsection{กลไกเชิงเทคนิคในการแก้ปัญหาเฉพาะทาง (Technical Mechanisms)}
+
+\textbf{1. Asynchronous Execution ด้วย Coroutines}
+
+\begin{itemize}
+\item \textbf{ปัญหา:} เมื่อสั่ง LoadScene คลาสทุกคลาสใน Scene ใหม่จะถูกกระชากขึ้นมา ซึ่ง \texttt{Object.Start()} บางตัวอาจจะทำงานก่อนหลังไม่เท่ากัน ทำให้การเซ็ตค่าทับเกิด Race Condition
+\item \textbf{การแก้ไข:} โค้ดมีการเรียก \texttt{StartCoroutine(ApplyPendingDataNextFrame())} และ \texttt{yield return null;} เพื่อบังคับให้เธรดเกม รอผ่านไป 1 เฟรม เพื่อให้องค์ประกอบลอจิกทุกอย่างใน State ใหม่สร้างตัวเองเสร็จหมดก่อน ค่อยทำการสาด Data จาก Save ทับเข้าไป ได้ผลลัพธ์ที่นิ่งและมั่นคง ไม่ขัดจังหวะ Frame rate
+\end{itemize}
+
+\textbf{2. Error Fallback Handling (Try/Catch)}
+
+\begin{itemize}
+\item \textbf{การแก้ไข:} ในลูปการ Load มีการครอบกระบวนการย่อยด้วย try-catch บล็อก (เช่น โหลดสเตตัส, โหลดคลังเก็บของ, รีเซ็ตตาย) การทำแบบนี้คือการทำให้มั่นใจว่า ถึงแม้จะมีระบบใดระบบหนึ่งอัปเดตใหม่แล้ว Data Model พังพินาศ มันก็จะไม่ขัดขวางให้ระบบส่วนที่เหลืออีก 3 อันหยุดทำงานไปด้วย เกมจะไม่จอค้างจากการโหลดล้มเหลวเพียง 1 จุด
+\end{itemize}
+
+\section{Character Systems Architecture}
+
+รายงานส่วนนี้อธิบายถึงโครงสร้างเชิงสถาปัตยกรรม (Architecture Design) และหลักการวิศวกรรมซอฟต์แวร์ (Software Engineering) ที่ใช้ในการสร้าง ตัวละครผู้เล่น (Player), ศัตรูทั่วไป (Enemy) และ บอส (Boss) ในเกมนี้ การออกแบบทั้งหมดอิงหลักการ OOP (Object-Oriented Programming) อย่างเต็มรูปแบบ รวมไปถึงการใช้ Design Patterns เพื่อให้ระบบยืดหยุ่น ลดการผูกมัดโค้ด (Decoupling) และง่ายต่อการปรับขนาด (Scalability)
+
+\subsection{แกนหลักของทุกตัวละคร (Core Architecture)}
+
+ระบบตัวละครของเกมนี้ไม่ได้ยัดลอจิกทั้งหมดไว้ในคลาสเดียว แต่ใช้หลักการ Composition over Inheritance ผสมกับ Component-Based Architecture แทนที่จะมีคลาส Character ตัวใหญ่ตัวเดียว โค้ดถูกแบ่งเป็นชิ้นส่วนย่อย (Components) ที่ทำหน้าที่เดี่ยวๆ ตามหลัก Single Responsibility Principle (SRP) อาทิ:
+
+\begin{itemize}
+\item \textbf{Control/AI:} สำหรับคุมการเคลื่อนไหว พฤติกรรม
+\item \textbf{Health:} สำหรับจดจำพลังชีวิตและระบบรับดาเมจ
+\item \textbf{Stats:} สำหรับคำนวณค่าพลัง (STR, AGI, ฯลฯ)
+\item \textbf{Attack:} สำหรับจัดการการตีและการชน (Hitbox)
+\end{itemize}
+
+\subsection{ตัวละครผู้เล่น (Player System)}
+
+\textbf{1. Inheritance \& Polymorphism (การสืบทอดและการพ้องรูป)}
+
+\begin{itemize}
+\item \texttt{PlayerHealth} สืบทอดมาจาก \texttt{CharacterHealth}: เกมมีการสร้าง Base Class \texttt{CharacterHealth} เอาไว้ให้ทุกตัวละครในเกมใช้งานร่วมกัน (มีฟังก์ชันลดเลือด เลือดตาย) แต่ \texttt{PlayerHealth} ใช้หลักการ Polymorphism (ผ่านคีย์เวิร์ด \texttt{override}) เพื่อเขียนทับฟังก์ชัน \texttt{TakeDamage()} และ \texttt{Die()}
+\item \textbf{เหตุผล:} เพื่อแทรกระบบ Parry (ปัดป้อง) และ Block (ป้องกัน) เข้าไปเฉพาะตัวละครผู้เล่นเท่านั้น โดยไม่ต้องไปกวนระบบรับดาเมจของศัตรู
+\end{itemize}
+
+\textbf{2. Coroutines สำหรับ Time-based Actions}
+
+\begin{itemize}
+\item ใน \texttt{PlayerControl} การทำสกิล Dash (พุ่ง) ถูกเขียนบน IEnumerator ควบคู่กับการประยุกต์ใช้ Animation Events (\texttt{Anim\_DashIFrameStart()})
+\item \textbf{เหตุผล:} การใช้ Coroutine ทำให้สามารถสั่งแคปความเร็วคงที่เป็นระยะเวลาเล็กน้อย (เช่น 0.15 วิ) ได้โดยไม่ต้องใช้ตัวแปร Timer มารกในโค้ด \texttt{Update()}
+\end{itemize}
+
+\subsection{ศัตรูทั่วไป (Enemy AI System)}
+
+ศัตรูใช้เทคนิคที่ซับซ้อนขึ้นเพื่อให้มันคิดและตัดสินใจได้
+
+\textbf{1. State Pattern (Finite State Machine)}
+
+ปัญหาของการเขียน AI ศัตรูคือพฤติกรรมมันเยอะ (ยืน, เดินลาดตระเวน, ไล่ล่า, โจมตี, ตาย) หากใช้ if-else เช็คสถานะ โค้ดใน \texttt{Update} จะยาวเป็นพันบรรทัด เกมนี้แก้ปัญหาโดยใช้ State Pattern
+
+\begin{itemize}
+\item \textbf{โครงสร้างคลาส:} สร้าง Abstract class ชื่อ \texttt{EnemyState} (มีฟังก์ชัน Enter, Update, Exit) แล้วสร้างซับคลาสแยกเฉพาะ เช่น \texttt{EnemyIdleState}, \texttt{EnemyChaseState}, \texttt{EnemyAttackState}
+\item \textbf{การทำงานใน \texttt{EnemyAI}:} เมื่อศัตรูเจอผู้เล่น มันจะเรียกคำสั่ง \texttt{ChangeState(new EnemyChaseState(this))}
+\item \textbf{ข้อดีทางหลักการ (Open/Closed Principle):} หากในอนาคตต้องการเพิ่มแมงมุมที่กระโดดได้ ก็แค่เขียนคลาส \texttt{EnemyJumpState} เพิ่ม โดยไม่ต้องไปกดแก้โค้ดในตัว \texttt{EnemyAI} สักตัวอักษรเดียว
+\end{itemize}
+
+\textbf{2. Event-Driven Design (Observer Pattern)}
+
+\begin{itemize}
+\item คลาส \texttt{EnemyAI} ทำการสมัครสมาชิก (Subscribe) ไปที่ \texttt{Hitbox.OnHit} (C\# Delegate)
+\item \textbf{เหตุผล:} เมื่อกล่อง Hitbox ฟาดโดนผู้เล่น Hitbox จะตะโกนบอกทุกโค้ดที่แอบฟังอยู่ว่า "ชั้นตีโดนแล้วนะ!" ตัว \texttt{EnemyAI} ก็จะรับรู้แล้วสั่งทำ HitStop (ฟรีซเฟรม) ทันที โค้ด Hitbox จึงไม่ต้องรู้จักว่าใครถือมันอยู่
+\end{itemize}
+
+\subsection{บอส (Boss System)}
+
+บอสเกมนี้ (ผ่าน \texttt{BossAI.cs}) คือวิวัฒนาการขั้นสูงสุดของศัตรูทั่วไป โดยยกทัพ Patterns มาใช้อย่างครบครันเพื่อให้ดูอลังการ
+
+\textbf{1. State Pattern ขั้นกว่า}
+
+บอสมี FSM (Finite State Machine) ของตัวเองชื่อ \texttt{BossState} (คล้าย \texttt{EnemyState} แต่ซับซ้อนกว่าเรื่องการคุม Action). จุดเด่นคือ State ของการป้องกัน (\texttt{BossDodgeState}, \texttt{BossBlockState}) เมื่อบอสโดนตีสวน มันสามารถหักเหขัดจังหวะ State ปัจจุบันเปลี่ยนแผนไปหลบได้ทันที
+
+\textbf{2. Strategy Pattern (ระบบ Skills)}
+
+บอสแต่ละตัวมีสกิลไม่เหมือนกันและรูปแบบเปลี่ยนตามเฟสเลือด การนำสคริปต์สกิลไปยัดใน \texttt{BossAI} คือหายนะ โค้ดจึงใช้ Strategy Pattern
+
+\begin{itemize}
+\item \textbf{กลไก:} สร้างคลาสจำพวก \texttt{BossSkill} (เช่น โจมตีประชิด, พ่นลูกโป่ง, ยิง Homing) แล้วแยกเป็นคลาสเดี่ยว
+\item ใน \texttt{BossAI} มีระบบ Dictionary (\texttt{Dictionary<BossSkill, float>}) เอาไว้ใช้จดจำสูตรสกิลเหล่านั้นพร้อมจับเวลา Cooldown เฉพาะสกิล
+\item เวลาบอสจะตี มันจะตัดสินใจเลือกสูตรสกิลที่มี โยนเข้าฟังก์ชัน \texttt{skill.Execute(this)} ทำให้สามารถเอาสูตรตีท่าแปลกๆ ไปแปะบอสตัวไหนก็ได้
+\end{itemize}
+
+\textbf{3. Data-Driven Design (ระบบ Phases)}
+
+\begin{itemize}
+\item ตัวแปร \texttt{BossPhaseData[] phases} เปิดกว้างให้ดีไซเนอร์เข้าไปจูนใน Unity Inspector ได้ว่า:
+    \begin{itemize}
+    \item \textbf{Phase 1:} เลือด 100-50\% / เดินช้า / ใช้สคริปต์สกิล ทุบ
+    \item \textbf{Phase 2:} เลือด 50-0\% / เดินเร็ว 1.5 เท่า / ใช้สคริปต์สกิล ยิงเวทย์
+    \end{itemize}
+\item ทำให้โปรแกรมเมอร์ไม่ต้อง Hardcode ตัวเลข 50\% หรือเงื่อนไขในโค้ด ปล่อยให้ระบบมันเปลี่ยนร่าง (Transition) เติมเกราะอมตะ (Hyper Armor) ตาม Data ที่ไหลเข้ามาเลย
+\end{itemize}
+
+\section{Inventory \& Item Systems Architecture}
+
+รายงานส่วนนี้อธิบายถึงโครงสร้างและแพทเทิร์นเชิงเทคนิคที่ใช้ในการพัฒนาระบบคลังเก็บของ (Inventory), ระบบอาวุธชุดเกราะ (Equipment), และระบบไอเทม (Items) โดยเน้นไปที่สถาปัตยกรรม Data-Driven และ UI Event Handling
+
+\subsection{โครงสร้างข้อมูลไอเทม (Data-Driven Design)}
+
+ระบบไอเทมในเกมนี้ไม่ได้ถูกเขียนฝัง (Hardcode) ไว้ในสคริปต์ แต่ใช้สถาปัตยกรรม Data-Driven Design ผ่านฟีเจอร์ ScriptableObject ของ Unity
+
+\textbf{1. คลาสฐาน (Base Class: \texttt{Item})}
+
+\begin{itemize}
+\item \textbf{การประยุกต์ใช้:} สร้างไฟล์คลาส \texttt{Item : ScriptableObject} ซึ่งเก็บเฉพาะ "ข้อมูลดิบ" เช่น ชื่อ (\texttt{itemName}), รูปภาพ (\texttt{image}), ประเภทย่อย (\texttt{type}), และตั้งค่าการซ้อนทับ (\texttt{stackable})
+\item \textbf{ข้อดี:}
+    \begin{itemize}
+    \item \textbf{ประหยัดหน่วยความจำ:} ไม่ว่าผู้เล่นจะมีขวดเลือด (Potion) 100 ขวดในกระเป๋า ข้อมูลภาพพื้นฐานจะถูกจดจำไว้ใน RAM เพียง 1 ก้อน (Flyweight Pattern Concept)
+    \item \textbf{เอื้อต่อ Game Designer:} สามารถคลิกขวา Create $>$ Scriptable object/Item ใน Unity เพื่อสร้างไอเทมใหม่ได้ทันทีโดยไม่ต้องเขียนโค้ด
+    \end{itemize}
+\end{itemize}
+
+\textbf{2. การสืบทอดไอเทม (Inheritance)}
+
+คลาส \texttt{Item} ถูกออกแบบไว้สำหรับการสืบทอด (Inheritance) สำหรับไอเทมที่มีฟังก์ชันเฉพาะ
+
+\begin{itemize}
+\item \texttt{EquipmentItem : Item}: สิ่งที่เพิ่มเข้ามาคือชุดตัวเลขค่าสถานะ \texttt{StatBonus} และรูปภาพตอนใส่สวม \texttt{equippedSprite}
+\item \texttt{UseableItem : Item}: (พบผ่านการอ้างอิงใน \texttt{InventoryManager}) คือไอเทมที่กดใช้ได้ มีฟังก์ชัน \texttt{Use(player)} แบบ Polymorphism (พ้องรูป) เพื่อลดเลือด เพิ่มเลือด ต่างกันไปในแต่ละคลาสลูก
+\end{itemize}
+
+\subsection{โครงสร้างการจัดการช่องเก็บของ (InventoryManager \& EquipmentManager)}
+
+หัวใจของระบบคลังคือ \texttt{InventoryManager} และ \texttt{EquipmentManager} ที่ทำงานควบคู่กันด้วยแพทเทิร์น Singleton
+
+\textbf{1. ระบบจัดเรียง Data (Data Structure)}
+
+\begin{itemize}
+\item \textbf{กระเป๋าและ Hotbar:} การเก็บของใช้ Array ในการจำลองช่องเก็บของ (\texttt{InventorySlot[] inventorySlots}, \texttt{UseableItemSlot[] hotbarSlot})
+\item \textbf{Hotbar Indexing (\texttt{validHotbarIndices}):} แทนที่จะวนลูปหาของใน Hotbar ไปเรื่อยๆ ทุกครั้งที่กดเลื่อนเมาส์ เกมนี้เลือกใช้ \texttt{List<int>} เก็บอ้างอิงของ "ช่องที่ไม่ได้ว่างเปล่า" ไว้ล่วงหน้า (Caching) ทำให้ฟังก์ชันเลื่อนเมาส์ดึงค่าใช้งานได้รวดเร็วระดับ $O(1)$
+\end{itemize}
+
+\textbf{2. โค้ดที่สะอาดและครอบคลุมความผิดพลาด (Defensive Programming)}
+
+\begin{itemize}
+\item การ Add ไอเทม ถูกออกแบบค่อนข้างรัดกุม
+    \begin{itemize}
+    \item \textbf{สเต็ป 1:} ถ้ายัดไอเทมเข้ามา เช็คก่อนว่ามันซ้อนกันได้ไหม (Stackable)
+    \item \textbf{สเต็ป 2:} ถ้าซ้อนได้ ให้วิ่งไปหาช่องที่มีของแบบเดียวกันอยู่แล้ว เติมให้เต็มหลอด (\texttt{stackCapacity = 50})
+    \item \textbf{สเต็ป 3:} ถ้าล้นหลอด ค่อยไปสร้างกองใหม่ การออกแบบตรรกะแบบนี้ทำให้กระเป๋าผู้เล่นเป็นระเบียบ ไม่เกิดบั๊กไอเทมกองเดียวกันกระจัดกระจาย
+    \end{itemize}
+\end{itemize}
+
+\subsection{UI และการโต้ตอบด้วยเมาส์ (Event-Driven UI)}
+
+การลากวางไอเทม (Drag \& Drop) ในกระเป๋าใช้ระบบพี่น้องของ Observer Pattern คือ Events และ Interfaces
+
+\textbf{1. การสืบทอดบนช่องสวมใส่ (Polymorphism on Slots)}
+
+\begin{itemize}
+\item มีคลาสแม่ชื่อ \texttt{InventorySlot} รองรับคำสั่งเวลาปล่อยเมาส์ลาก \texttt{OnDrop(PointerEventData)}
+\item เมื่อเราสร้างช่องใส่ชุดเกราะ เราไม่สร้างใหม่หมด แต่เขียน \texttt{EquipmentSlot : InventorySlot}
+    \begin{itemize}
+    \item การทำเช่นนี้ทำให้ \texttt{EquipmentSlot} เขียนทับฟังก์ชันเช็คเงื่อนไข \texttt{CanPlaceItem()} แทรกลอจิกเข้ามาว่า \textit{''รับเฉพาะ \texttt{EquipmentItem} เท่านั้นนะ ไอเทมอื่นห้ามวาง!!"}
+    \end{itemize}
+\end{itemize}
+
+\textbf{2. ระบบ Observer (UI Events)}
+
+\begin{itemize}
+\item การอัปเดตค่าพลังหรือเปลี่ยนภาพกระเป๋ามีการใช้ \texttt{InventoryEvents.OnItemMoved} และ \texttt{InventoryEvents.OnBeginDragItem} ซึ่งเป็นระดับ Static Delegate
+\item ทันทีที่คุณคลิกลากดาบ ตัว \texttt{EquipmentSlot} ที่แอบฟัง \texttt{OnBeginDragItem} อยู่ ก็จะเช็กเงื่อนไขดาบ แล้วสั่งเปลี่ยนสีช่องของตัวเองให้ "เป็นสีเขียว" (วางได้) หรือ "สีแดง" (วางไม่ได้) เพื่อนำทางสายตาผู้เล่นโดยอัตโนมัติ
+\end{itemize}
+
+\subsection{ระบบสวมใส่อุปกรณ์และคำนวณสเตตัส (Equipment \& Stats System)}
+
+ระบบอุปกรณ์และการคำนวณค่าสถานะ (Stats) ออกแบบโดยเน้นหลักการ Operator Overloading และการคำนวณแบบ Event-Driven Recalculation
+
+\textbf{1. ข้อมูลแบบ Struct \& Operator Overloading}
+
+\begin{itemize}
+\item ค่าสถานะ (HP, ATK, DEF, ฯลฯ) ถูกมัดรวมกันเป็น \texttt{struct StatBonus} แทนที่จะเป็น Class เพื่อลดภาระของ Garbage Collector (GC)
+\item \textbf{Operator Overloading:} สคริปต์มีการเขียนทับเครื่องหมายบวก (\texttt{public static StatBonus operator +(StatBonus a, StatBonus b)}) ทำให้เวลาผู้เล่นใส่ชุดเกราะ 5 ชิ้น โปรแกรมเมอร์แค่เขียน \texttt{total += equip.GetBonus();} สเตตัสทุกสายก็จะบวกต่อกันเป็นทอดๆ อย่างสวยงาม โค้ดอ่านง่ายและลดโอกาสบวกเลขผิดพลาด
+\end{itemize}
+
+\textbf{2. โครงสร้างค่าพลังผู้เล่น (Inheritance on Stats)}
+
+\begin{itemize}
+\item \texttt{CharacterStats}: เป็น Base Class หน้าที่แค่เก็บค่าพลังดิบ (BaseHP, BaseATK) ที่ทั้งมอนสเตอร์และผู้เล่นมีเหมือนกัน
+\item \texttt{PlayerStats : CharacterStats}: ฝั่งผู้เล่นจับไปสืบทอด แล้วตีบวกฟังก์ชันเฉพาะตัวเพิ่มเข้าไป เช่น BaseMana, heatGuage (ระบบเกจสกิล) โดยมีฟังก์ชัน \texttt{RecalculateStats()} ที่จะประกบค่า Base เข้ากับ \texttt{armorBonus}
+\end{itemize}
+
+\textbf{3. ควบคุมการคำนวณใหม่ (Event-Driven Recalculation)}
+
+\begin{itemize}
+\item \texttt{EquipmentManager} จะไม่คำนวณสถานะพร่ำเพรื่อใน \texttt{Update()} (ซึ่งเปลืองทรัพยากร)
+\item โค้ดถูกเขียนให้ดักรอ \texttt{InventoryEvents.OnItemMoved} แทน เมื่อผู้เล่นลากชุดเกราะใส่ช่อง ระบบ Event จะตะโกนบอก \texttt{EquipmentManager} ให้รันลูปรวมแต้ม \texttt{StatBonus} จากชุดเกราะทุกชิ้น ส่งให้ \texttt{PlayerStats} และไปเคาะประตูสั่งให้ UI อัปเดตตัวเลขบนหน้าจอ เป็นอันเสร็จสิ้น
+\end{itemize}
 
 \section{Development Methodology}
 
